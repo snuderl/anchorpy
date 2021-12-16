@@ -1,34 +1,24 @@
 """This module defines the Program class."""
 from __future__ import annotations
-from typing import Any, Optional
-from base64 import b64decode
-import zlib
-import json
 
-from anchorpy.coder.coder import Coder
+import json
+import zlib
+from base64 import b64decode
+from typing import Any, Optional
+
 from anchorpy.coder.accounts import ACCOUNT_DISCRIMINATOR_SIZE
-from anchorpy.program.common import AddressType, translate_address
-from anchorpy.idl import Idl, _decode_idl_account, _idl_address
-from solana.publickey import PublicKey
-from anchorpy.provider import Provider
-from anchorpy.program.namespace.rpc import (
-    _RpcFn,
-    _build_rpc_item,
-)
-from anchorpy.program.namespace.transaction import (
-    _TransactionFn,
-    _build_transaction_fn,
-)
-from anchorpy.program.namespace.instruction import (
-    _InstructionFn,
-)
-from anchorpy.program.namespace.account import AccountClient, _build_account
-from anchorpy.program.namespace.simulate import (
-    _SimulateFn,
-    _build_simulate_item,
-)
-from anchorpy.program.namespace.types import _build_types
+from anchorpy.coder.coder import Coder
 from anchorpy.error import IdlNotFoundError
+from anchorpy.idl import Idl, _decode_idl_account, _idl_address
+from anchorpy.program.common import AddressType, translate_address
+from anchorpy.program.namespace.account import AccountClient, _build_account
+from anchorpy.program.namespace.instruction import _InstructionFn
+from anchorpy.program.namespace.rpc import _build_rpc_item, _RpcFn
+from anchorpy.program.namespace.simulate import _build_simulate_item, _SimulateFn
+from anchorpy.program.namespace.transaction import _build_transaction_fn, _TransactionFn
+from anchorpy.program.namespace.types import _build_types
+from anchorpy.provider import Provider
+from solana.publickey import PublicKey
 
 
 def _parse_idl_errors(idl: Idl) -> dict[int, str]:
@@ -227,4 +217,51 @@ class Program(object):
         provider_to_use = Provider.local() if provider is None else provider
         program_id = translate_address(address)
         idl = await cls.fetch_idl(program_id, provider_to_use)
+        return cls(idl, program_id, provider)
+
+    @classmethod
+    def fetch_idl_sync(
+        cls,
+        address: AddressType,
+        provider,
+    ) -> Idl:
+        """Fetch an idl from the blockchain.
+        Args:
+            address: The program ID.
+            provider: The network and wallet context.
+        Raises:
+            IdlNotFoundError: If the requested IDL account does not exist.
+        Returns:
+            Idl: The fetched IDL.
+        """
+        program_id = translate_address(address)
+        actual_provider = provider if provider is not None else Provider.local()
+        idl_addr = _idl_address(program_id)
+        account_info = actual_provider.client.get_account_info(idl_addr)
+        account_info_val = account_info["result"]["value"]
+        if account_info_val is None:
+            raise IdlNotFoundError(f"IDL not found for program: {address}")
+        idl_account = _decode_idl_account(
+            b64decode(account_info_val["data"][0])[ACCOUNT_DISCRIMINATOR_SIZE:]
+        )
+        inflated_idl = _pako_inflate(bytes(idl_account["data"])).decode()
+        return Idl.from_json(json.loads(inflated_idl))
+
+    @classmethod
+    def at_sync(
+        cls,
+        address: AddressType,
+        provider=None,
+    ) -> Program:
+        """Generate a Program client by fetching the IDL from the network.
+        In order to use this method, an IDL must have been previously initialized
+        via the anchor CLI's `anchor idl init` command.
+        Args:
+            address: The program ID.
+            provider: The network and wallet context.
+        Returns:
+            The Program instantiated using the fetched IDL.
+        """
+        program_id = translate_address(address)
+        idl = cls.fetch_idl_sync(program_id, provider)
         return cls(idl, program_id, provider)
