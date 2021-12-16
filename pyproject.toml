@@ -20,7 +20,7 @@ toolz = "^0.11.2"
 jsonrpcclient = "^4.0.1"
 zstandard = "^0.16.0"
 pytest-xprocess = "^0.18.1"
-
+anchorpy={ git = "https://github.com/snuderl/anchorpy.git", rev = "eaa5775b72e4d92de50badc9c1a8869a037b4614" }
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"
