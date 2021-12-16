@@ -19,7 +19,6 @@ toolz = "^0.11.2"
 jsonrpcclient = "^4.0.1"
 zstandard = "^0.16.0"
 pytest-xprocess = "^0.18.1"
-apischema={ git = "https://github.com/snuderl/apischema.git", rev = "62d07cc02b7a291fc3ad1206d025630eb4e30889" }
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"
