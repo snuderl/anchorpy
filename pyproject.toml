@@ -34,6 +34,7 @@ mkdocs-material = "^7.3.3"
 bump2version = "^1.0.1"
 pyserum = "^0.5.0-alpha.0"
 mkdocstrings = "^0.16.2"
+anchorpy={ git = "https://github.com/snuderl/anchorpy.git", rev = "e0a64ca4c7203cc2cb32d0369de10fcb65f8bd21" }
 
 [tool.poetry.plugins.pytest11]
 pytest_anchorpy = "anchorpy.pytest_plugin"
