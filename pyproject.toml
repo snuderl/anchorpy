@@ -12,7 +12,6 @@ python = "^3.9"
 construct-typing = "^0.5.1"
 solana = "^0.18.2"
 sumtypes = "^0.1a5"
-apischema = "^0.15.6"
 inflection = "^0.5.1"
 borsh-construct = "^0.1.0"
 websockets = "^10.0"
@@ -20,7 +19,7 @@ toolz = "^0.11.2"
 jsonrpcclient = "^4.0.1"
 zstandard = "^0.16.0"
 pytest-xprocess = "^0.18.1"
-anchorpy={ git = "https://github.com/snuderl/anchorpy.git", rev = "eaa5775b72e4d92de50badc9c1a8869a037b4614" }
+apischema={ git = "https://github.com/snuderl/apischema.git", rev = "837ca29502a4bd9490c592b62b3d807ffbc409e0" }
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"
@@ -34,7 +33,6 @@ mkdocs-material = "^7.3.3"
 bump2version = "^1.0.1"
 pyserum = "^0.5.0-alpha.0"
 mkdocstrings = "^0.16.2"
-anchorpy={ git = "https://github.com/snuderl/anchorpy.git", rev = "e0a64ca4c7203cc2cb32d0369de10fcb65f8bd21" }
 
 [tool.poetry.plugins.pytest11]
 pytest_anchorpy = "anchorpy.pytest_plugin"
