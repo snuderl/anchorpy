@@ -24,7 +24,7 @@ def parse_idl_errors(idl: Idl) -> Dict[int, str]:
     return errors
 
 
-@dataclass
+@dataclass(frozen=False)
 class Instruction:
     data: Union[Dict[str, Any], Container[Any]]
     name: str
