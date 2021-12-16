@@ -21,7 +21,7 @@ class Event(NamedTuple):
     data: Any
 
 
-@dataclass
+@dataclass(frozen=False)
 class Instruction:
     """Container for a named instruction.
 
