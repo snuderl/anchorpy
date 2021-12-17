@@ -237,7 +237,7 @@ class Program(object):
         program_id = translate_address(address)
         actual_provider = provider if provider is not None else Provider.local()
         idl_addr = _idl_address(program_id)
-        account_info = actual_provider.client.get_account_info(idl_addr)
+        account_info = actual_provider.connection.get_account_info(idl_addr)
         account_info_val = account_info["result"]["value"]
         if account_info_val is None:
             raise IdlNotFoundError(f"IDL not found for program: {address}")
